@@ -1,22 +1,29 @@
 from cx_Freeze import setup, Executable
+import sys
 
-# Opciones de compilación
+# Nombre del archivo principal
+main_script = "carga_productos.py"
+
+# Configuración de opciones
 build_exe_options = {
     "packages": [
-        "os", "sys", "openpyxl", "pandas", "csv", "datetime",
-        "PyQt5", "escpos", "usb", "collections"
+        "os", "sys", "pandas", "openpyxl", "escpos", "csv", "PyQt5"
     ],
+    "excludes": [],
     "include_files": [],
-    "include_msvcr": True,  # incluye las DLL de Visual C++
+    "include_msvcr": True,  # incluye runtime de Visual C++
 }
 
-# Configuración del ejecutable
+# Evitar error 'QmlImportsPath' (bug de cx_Freeze con PyQt)
+import os
+os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = ""
+os.environ["QT_PLUGIN_PATH"] = ""
+
 setup(
     name="Tickeadora",
     version="1.0",
-    description="Aplicación de tickeadora para control de ventas",
+    description="App de Tickeadora con PyQt5",
     options={"build_exe": build_exe_options},
-    executables=[
-        Executable("main.py", base="Win32GUI", target_name="Tickeadora.exe")
-    ]
+    executables=[Executable(main_script, base="Win32GUI")]
 )
+
